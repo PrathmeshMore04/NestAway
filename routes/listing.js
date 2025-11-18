@@ -14,27 +14,8 @@ const upload = multer({ storage });
 router
     .route("/")
     .get(wrapAsync(listingController.index))
-    // .post(isLoggedIn, upload.single("listing[image]") , validateListing , wrapAsync(listingController.createListing));
-    .post( 
-    isLoggedIn,
-    
-    // 1. Add a tiny middleware to log "Upload Starting"
-    (req, res, next) => {
-        console.log("1. Received POST request. Starting upload...");
-        next();
-    },
-    
-    upload.single("listing[image]"), 
-    
-    // 2. Add a log after upload
-    (req, res, next) => {
-        console.log("2. Upload finished! File info:", req.file);
-        next();
-    },
-    
-    validateListing, 
-    wrapAsync(listingController.createListing)
-);
+    .post(isLoggedIn, upload.single("listing[image]") , validateListing , wrapAsync(listingController.createListing));
+
 // New Route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
@@ -45,8 +26,6 @@ router.route("/:id")
     .get(wrapAsync(listingController.showListing))
     .put(isLoggedIn, isOwner, upload.single("listing[image]"), validateListing, wrapAsync(listingController.updateListing))
     .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListing));
-
-
 
 // Edit Route
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.renderEditForm));

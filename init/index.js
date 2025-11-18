@@ -5,7 +5,7 @@ const Listing = require("../models/listing.js");
 main();
 
 async function main(){
-    mongoose.connect("mongodb://127.0.0.1:27017/nestaway");
+    mongoose.connect("mongodb://127.0.0.1:27017/abode");
 }
 
 const initDB = async () => {

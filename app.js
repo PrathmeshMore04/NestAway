@@ -27,10 +27,13 @@ const User = require("./models/user.js");
 
 const userRouter = require("./routes/user.js"); 
 
+const MongoStore = require("connect-mongo");
+let dbUrl = process.env.ATLASDB_URL;
+
 main();
 
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/nestaway");
+    await mongoose.connect(dbUrl);
 }
 
 app.set("view engine" , "ejs");
@@ -40,7 +43,20 @@ app.use(methodOverride("_method"));
 app.engine("ejs" , ejsMate);
 app.use(express.static(path.join(__dirname , "/public")));
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret : process.env.SECRET,
+    },
+    touchAfter: 24 * 60 * 60, 
+});
+
+store.on("error", () => {
+    console.log("Error in Mongo Session, ", err);
+});
+
 const sessionOptions = {
+    store,
     secret: process.env.SECRET,
     resave : false,
     saveUninitialized: true,
@@ -83,9 +99,9 @@ app.use((req , res , next) => {
 
 app.listen(8080);
 
-app.get("/" , (req , res) => {
-    res.send("<h1>Welcome to NestAway!</h1>")
-});
+// app.get("/" , (req , res) => {
+//     res.send("<h1>Welcome to Abode!</h1>")
+// });
 
 app.use("/listings" , listingRouter);
 app.use("/listings/:id/reviews" , reviewRouter);

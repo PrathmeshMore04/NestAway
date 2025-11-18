@@ -11,12 +11,11 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) =>{
     return {
-      folder: 'nestawayDEV',
+      folder: 'abodeDEV',
       allowed_formats: ["png", "jpg", "jpeg"],
     };
   },
 });
-
 
 module.exports = {
     cloudinary,
